@@ -130,7 +130,7 @@ def one_flick(sleep_time = 0.1):
 
 
 
-def one_flick_pic(sleep_time = 0.1):
+def one_flick_pic(sleep_time = 0.1, num):
     GPIO.output(ledPinR1, GPIO.LOW)
     GPIO.output(ledPinG1, GPIO.LOW)
     GPIO.output(ledPinB1, GPIO.LOW)
