@@ -22,6 +22,7 @@ from keras.utils.np_utils import to_categorical
 
 
 
+
 os.chdir("/Users/alexpapiu/Documents/Data/Pi_Imaging/ISBI2016_ISIC_Part3_Training_Data")
 
 labels = pd.read_csv("/Users/alexpapiu/Documents/Data/Pi_Imaging/ISBI2016_ISIC_Part3_Training_GroundTruth.csv", header = None)
@@ -43,18 +44,29 @@ imgs.shape
 
 np.save("images", imgs)
 
+imgs = np.load("/Users/alexpapiu/Documents/Data/Pi_Imaging/images.npy")
+
+imgs[20]
+
+labels = pd.read_csv("/Users/alexpapiu/Documents/Data/Pi_Imaging/ISBI2016_ISIC_Part3_Training_GroundTruth.csv", header = None)
+labels
+
+
 #checking if it works.
-plt.imshow(imgs[1].transpose(1,2,0))
+plt.imshow(imgs[200].transpose(1,2,0))
+
 
 target_enc = LabelEncoder()
 y = target_enc.fit_transform(labels[1])
 
-X_tr, X_val, y_tr, y_val = train_test_split(imgs, y, stratify = y)
+X_tr, X_val, y_tr, y_val = train_test_split(imgs, y, stratify = y, random_state = 4)
+
+y_tr
 
 X_tr = X_tr/255.0
 X_val = X_val/255.0
 
-X_tr
+X_val.shape
 
 X_tr.shape
 
@@ -67,7 +79,7 @@ model.add(Dropout(0.3))
 
 
 model.add(Convolution2D(32, 3, 3, activation="relu", border_mode="same"))
-model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(MaxPooling2D(pool_size=(3,3)))
 model.add(Dropout(0.3))
 
 
@@ -87,16 +99,53 @@ model.add(Dropout(0.3))
 model.add(Dense(1, activation = "sigmoid"))
 
 
-model.summary()
+
+
+len(model.get_weights())
+
+#model.save_weights("/Users/alexpapiu/Documents/Projects/archhacks/basic_weights")
+
+
+#model.summary()
+
 
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+
+
+#model.load_weights("/Users/alexpapiu/Documents/Projects/archhacks/basic_weights")
 
 fracs = pd.Series(y_tr).value_counts()
 fracs = fracs/np.sum(fracs)
 fracs
 
-model.fit(X_tr, y_tr, validation_data = (X_val, y_val), nb_epoch = 5, batch_size = 32)
+
+model.fit(X_tr, y_tr, validation_data = (X_val, y_val), nb_epoch = 20, batch_size = 32)
 
 
 
-model.predict(X_val)
+
+from sklearn.metrics import *
+
+
+preds = model.predict(X_val)
+preds.shape
+
+preds
+
+roc_auc_score(y_val, preds)
+
+average_precision_score(y_val, preds)
+
+
+preds = model.predict(X_val)
+pd.Series(preds[:, 0]).hist()
+
+pd.Series(model.predict(X_tr)[:, 0]).hist()
+
+
+model.predict(X_tr)
+
+preds = pd.Series(preds[0])
+preds
+
+preds.hist()
