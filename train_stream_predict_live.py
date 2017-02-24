@@ -115,6 +115,8 @@ while True:
     sm_img = np.array(image)
     sm_img = np.array(image)
     sm_img = sm_img/255.0
+    draw = ImageDraw.Draw(image)
+
 
     sm_img = sm_img.transpose(2,0,1)
 
@@ -128,6 +130,10 @@ while True:
 
     #answer = 'probability is ' + str(pred)
     answer = "fingers" if pred > 0.35 else "no fingers"
+
+    if answer == "fingers":
+        new_input(np.random.randint(2, size = 12).tolist())
+
 
     camera.annotate_text=answer
 

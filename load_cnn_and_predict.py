@@ -54,6 +54,8 @@ import RPi.GPIO as GPIO
 camera = PiCamera()
 camera.start_preview()
 
+camera.vflip = True
+
 
 
 while True:

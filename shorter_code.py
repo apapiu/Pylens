@@ -44,7 +44,7 @@ def one_flick(save_image = False, sleep_time = 0.3, name = None):
         new_input(inputs)
 
         if save_image:
-            path = '/home/pi/Pictures/{0}{1}.jpg'.format(name, i%3)
+            path = '/home/pi/Pictures/3Dbaby/{0}{1}.jpg'.format(name, i/3)
             camera.capture(path)
 
         time.sleep(sleep_time)
@@ -55,15 +55,30 @@ def one_flick(save_image = False, sleep_time = 0.3, name = None):
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#random:
+while True:
+    new_input(np.random.randint(2, size = 12).tolist())
+    time.sleep(0.5)
+
+
+
 while True:
     one_flick()
+
 
 #save images with different names:
 
 while True:
+
+
+    try:
+        camera = picamera.PiCamera()
+        camera.start_preview()
+    except:
+        pass
     name = input("what name should i give it?")
     button = Button(4)
     button.wait_for_press()
     one_flick(name = name, save_image = True)
     button.close()
-    break
+    camera.close()
